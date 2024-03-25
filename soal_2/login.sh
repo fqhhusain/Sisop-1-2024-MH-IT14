@@ -10,15 +10,20 @@ cek_email() {
 
 # Mengecek question yang telah teregistrasi
 cek_question() {
-    if ! grep -q "^$email:" /home/ash23/Downloads/soalsisop/users/users.txt | cut -d':' -f5; then
+    sav_ques=$(grep "^$email:" /home/ash23/Downloads/soalsisop/users/users.txt | cut -d':' -f3)
+    
+    if [[ "$question" != "$sav_ques" ]]; then
         echo "Question not found!"
         exit 1
     fi
+    
 }
 
 # Mengecek answer yang telah teregistrasi
 cek_answer() {
-    if ! grep -q "^$answer:" /home/ash23/Downloads/soalsisop/users/users.txt | cut -d':' -f5; then
+    sav_ans=$(grep "^$email:" /home/ash23/Downloads/soalsisop/users/users.txt | cut -d':' -f4)
+    
+    if [[ "$answer" != "$sav_ans" ]]; then
         echo "Answer not found!"
         exit 1
     fi
@@ -104,11 +109,11 @@ case "$jawaban" in
     read email
     cek_email "$email"
     read -p "Security Question: " question
-    cek_question
+    cek_question "$question"
     read -p "Enter your answer: " answer
-    cek_answer
+    cek_answer "$answer"
 
-    validasi_forget "$question"
+    validasi_forget "$email"
 
     ;; 
     *)
