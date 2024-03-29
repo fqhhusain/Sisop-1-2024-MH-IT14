@@ -1,4 +1,5 @@
 # Sisop-1-2024-MH-IT14
+Laporan pengerjaan soal shift modul 1 Praktikum Sistem Operasi 2024 olh Kelompok IT14
 ## Praktikan Sistem Operasi Kelompok IT14
 1. Tsaldia Hukma Cita          : 5027231036
 2. Muhammad Faqih Husain       : 5027231023
