@@ -836,6 +836,8 @@ chmod -R 700 /home/vboxuser/log/
 # crontab
 # * * * * * /home/vboxuser/log/minute_log.sh 
 ```
+aggregate_minutes_to_hourly_log.sh
+
 ### Revision
 1. Mengubah format isi dari file metrics yang dijalankan tiap menit
 ![Screenshot (33)](https://github.com/fqhhusain/Sisop-1-2024-MH-IT14/assets/88548292/b989d737-63c6-4054-955f-183039e3748d)
