@@ -62,6 +62,7 @@ e. Hasil akhir:
    [image].jpg
 ### Solution
 ### Revision
+1. Tidak ada, pada saat demo sudah lancar dan tidak ada tambahan dari aslab penguji
 ## Soal 4
 ### Study Case
 ### Solution 
