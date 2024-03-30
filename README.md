@@ -155,18 +155,68 @@ rm decrypted.txt
 rm encrypt.txt
 ```
 Penjelasan
-`sleep 1`
-menunggu 1 detik untuk melakukan pengecekan selanjutnya
-`steghide extract -sf "$file" -xf encrypt.txt -p "" `
-Pengecekan dilakukan dengan cara meng-ekstrak sebuah value dari setiap gambar dengan menggunakan command steghide.
+
 ```
-decrypt=$(cat encrypt.txt | base64 -d 2>/dev/null)
+#!/bin/bash
+
+log_file="image.log"
+decryption_file="decrypted.txt"
+link_file="link.txt"
+secret_image_file="secret_image.jpg"
+
+current_datetime=$(date +"%d/%m/%y %H:%M:%S")
+```
+menyimpan waktu saat ini untuk melakukan pencatatan log
+```
+for file in genshin_character/*/*.jpg
+do
+  steghide extract -sf "$file" -xf encrypt.txt -p ""
+```
+Meng-ekstrak sebuah value dari setiap gambar dengan menggunakan command steghide.
+```
+  decrypt=$(cat encrypt.txt | base64 -d 2>/dev/null)
   echo "$decrypt" > "$decryption_file"
 ```
-Dalam setiap gambar tersebut, terdapat sebuah file txt yang berisi string. Alyss kemudian mulai melakukan dekripsi dengan hex pada tiap file txt untuk mendapatkan sebuah url.
-`if [[ "$decrypt" == *"http"* ]]`
+dekripsi dengan hex pada tiap file txt untuk mendapatkan sebuah url.
+```
+  if [[ "$decrypt" == *"http"* ]]
+```
 Melakukan pengecekan url dengan mencari sub string http
+```
+  then
+    echo "$decrypt" > "$link_file"
 
+    wget -O "$secret_image_file" "$decrypt"
+```
+mendownload secret image yang telah ditemukan
+```
+    echo "[$current_datetime] [FOUND] [$file]" >> "$log_file"
+```
+Melakukan pencatatan log pada file image.log 
+```
+    echo -e "\nSecret image downloaded from $decrypt and saved as $secret_image_file"
+    break
+  else
+    echo "[$current_datetime] [NOT FOUND] [$file]" >> "$log_file"
+```
+Melakukan pencatatan log pada file image.log 
+```
+  fi
+
+  rm encrypt.txt
+  if [ -f "$decryption_file" ]; then
+    rm "$decryption_file"
+  fi
+
+  sleep 1
+```
+Menunggu 1 detik untuk melakukan pengecekan selanjutnya
+```
+done
+rm decrypted.txt
+rm encrypt.txt
+```
+Menghapus file yang tidak diperlukan
 ### Hasil Akhir
 1. search.sh
 2. awal.sh
