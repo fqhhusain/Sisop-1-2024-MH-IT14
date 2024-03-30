@@ -7,12 +7,145 @@ Laporan pengerjaan soal shift modul 1 Praktikum Sistem Operasi 2024 olehh Kelomp
 
 ## Soal 1
 ### Study Case
-1. Cipung dan abe ingin mendirikan sebuah toko bernama “SandBox”, sedangkan kamu adalah manajer penjualan yang ditunjuk oleh Cipung dan Abe untuk melakukan pelaporan penjualan dan strategi penjualan kedepannya yang akan dilakukan. Setiap tahun Cipung dan Abe akan mengadakan rapat dengan kamu untuk mengetahui laporan dan strategi penjualan dari “SandBox”. Buatlah beberapa kesimpulan dari data penjualan “Sandbox.csv” untuk diberikan ke cipung dan abe. a. Karena Cipung dan Abe baik hati, mereka ingin memberikan hadiah kepada customer yang telah belanja banyak. Tampilkan nama pembeli dengan total sales paling tinggi
-b. Karena karena Cipung dan Abe ingin mengefisienkan penjualannya, mereka ingin merencanakan strategi penjualan untuk customer segment yang memiliki profit paling kecil. Tampilkan customer segment yang memiliki profit paling kecil
-c. Cipung dan Abe hanya akan membeli stok barang yang menghasilkan profit paling tinggi agar efisien. Tampilkan 3 category yang memiliki total profit paling tinggi 
-d. Karena ada seseorang yang lapor kepada Cipung dan Abe bahwa pesanannya tidak kunjung sampai, maka mereka ingin mengecek apakah pesanan itu ada. Cari purchase date dan amount (quantity) dari nama adriaens
+1. Cipung dan abe ingin mendirikan sebuah toko bernama “SandBox”, sedangkan kamu adalah manajer penjualan yang ditunjuk oleh Cipung dan Abe untuk melakukan pelaporan penjualan dan strategi penjualan kedepannya yang akan dilakukan. Setiap tahun Cipung dan Abe akan mengadakan rapat dengan kamu untuk mengetahui laporan dan strategi penjualan dari “SandBox”. Buatlah beberapa kesimpulan dari data penjualan “Sandbox.csv” untuk diberikan ke cipung dan abe. 
+- Karena Cipung dan Abe baik hati, mereka ingin memberikan hadiah kepada customer yang telah belanja banyak. Tampilkan nama pembeli dengan total sales paling tinggi
+- Karena karena Cipung dan Abe ingin mengefisienkan penjualannya, mereka ingin merencanakan strategi penjualan untuk customer segment yang memiliki profit paling kecil. Tampilkan customer segment yang memiliki profit paling kecil
+-  Cipung dan Abe hanya akan membeli stok barang yang menghasilkan profit paling tinggi agar efisien. Tampilkan 3 category yang memiliki total profit paling tinggi
+-  Karena ada seseorang yang lapor kepada Cipung dan Abe bahwa pesanannya tidak kunjung sampai, maka mereka ingin mengecek apakah pesanan itu ada. Cari purchase date dan amount (quantity) dari nama adriaens
 ### Solution
+Pertama untuk mendownload file 'Sandbox.csv' di dalam google drive dari link yang tersedia maka menggunakan perintah wget, sedangkan untuk menentukan file mana yang akan didownload dapat menggunakan perintah -O
+```
+wget -O Sandbox.csv 'https://drive.google.com/uc?download=export&id=1cC6MYBI3wRwDgqlFQE1OQUN83JAreId0'
+```
+Selanjutnya untuk mengecek apakah file 'Sandbox.csv' telah berhasil didownload dapat menggunakan perintah ls -l 'namafile' yang akan memunculkan besaran memori dari file tersebut
+```
+ls -l Sandbox.csv
+```
+Terakhir untuk memunculkan isi dari file 'Sandbox.csv' dapat menggunakan perintah cat 'namafile'
+```
+cat Sandbox.csv
+```
+Setelah file 'Sandbox.csv' telah berhasil terdownload maka kita akan membuat sebuah file 'sandbox.sh' dengan perintah nano 'namafile'
+```
+nano sandbox.sh
+```
+#### Bagian A
+Untuk dapat memunculkan customer dengan sales paling tinggi maka dapat menggunakan perintah berikut:
+```
+awk -F ',' 'NR>1{if(max=="") { max=$17; cust=$6; } else if($17>max) { max=$17; cust=$6; }} END{print cust}' Sandbox.csv
+```
+Penjelasan
+- awk -F ',' --> untuk membaca baris lalu memisah tiap bagian di baris yang dipisah dgn ','
+-  NR>1 --> untuk memproses tiap baris setelah header
+- if(max=="") { max=$17; cust=$6; } --> fungsi untuk mengisiasi nilai max adalah baris pertama di kolom 17, dan cust adalah baris pertama di kolom 6
+- else if($17>max) { max=$17; cust=$6; } --> fungsi untuk mengganti nilai max dan nilai cust ketika program menemukan nilai max(sales) yang lebih tinggi dari baris-baris sebelumnya dibanding baris saat ini
+- END{print cust}' --> ketika semua sudah diproses maka outputnya adalah nama cust dengan sales terbesar
+- Sandbox.csv --> nama file 
+
+#### Bagian B
+Untuk memunculkan customer segment dengan profit paling kecil, maka dapat menggunakan perintah berikut:
+```
+awk -F ',' 'NR>1{if(min=="") { min=$20; segment=$7; } else if($20<min) { min=$20; segment=$7; }} END{print segment}' Sandbox.csv 
+```
+Penjelasan
+- awk -F ',' --> untuk membaca baris lalu memisah tiap bagian di baris yang dipisah dgn ','
+-  NR>1 --> untuk memproses tiap baris setelah header
+- if(min=="") { min=$20; segment=$7; } --> fungsi untuk mengisiasi nilai min adalah baris pertama di kolom 20, dan nilai segment adalah baris pertama di kolom 7
+-  else if($20<min) { min=$20; segment=$7; } --> fungsi untuk mengganti nilai min dan segment ketika program menemukan nilai min(profit) yang lebih kecil dari baris-baris sebelumnaya dibanding baris saat ini
+- END{print segment}' --> ketika semua sudah diproses maka outputnya adalah nama segment dengan profit paling kecil
+- Sandbox.csv --> nama file 
+
+#### Bagian C
+Untuk memuncul 3 kategori dengan total profit tertinggi, maka dapat menggunakan perintah berikut
+```
+awk -F ',' 'NR > 1 {profit[$14] += $20} END {for (category in profit) print category}' Sandbox.csv | sort -k2 -nr | head -n3
+```
+Penjelasan
+- awk -F ',' --> untuk membaca baris lalu memisah tiap bagian di baris yang dipisah dgn ','
+-  NR>1 --> untuk memproses tiap baris setelah header
+-  {profit[$14] += $20} --> untuk menjumlahkan nilai profit untuk tiap jenis kategori dalam bentuk array
+-  END {for (category in profit) print category} --> setelah program selesai dijalankan maka outputnya akan memunculkan semua kategori yang ada di dalam array profit
+-  Sandbox.csv --> nama file 
+-  | sort -k2 -nr --> untuk mengurutkan nilai profit dari output yang didapat dengan urutan dari yang paling besar hingga terkecil
+-  | head -n3 --> output yang telah diurutkan akan dibatasi hingga menjadi 3 baris teratas saja
+
+#### Bagian D
+Untuk memunculkan purchase date dan quantity dari customer dengan nama 'Adriaens Grayland' 
+```
+echo -n "Nama Customer: "; read nama_cust; awk -v nama="$nama_cust" -F ',' '$6==nama{  print "Order Date: "$2", Quantity: " $18}' Sandbox.csv 
+```
+Penjalasan 
+- echo -n "Nama Customer: "; --> untuk output "Nama Customer", dan dapat menerima input di baris yang sama 
+- read nama_cust; --> untuk membaca inputan
+- awk -v nama="$nama_cust" --> untuk membuat variabel nama dan memasukkan nilai dari Nama_cust
+- '$6==nama{  print "Order Date: "$2", Quantity: " $18}' --> untuk mencocokkan baris dengan kolom. Saat input "Adriaens Grayland" maka program akan mencari di setiap baris di kolom Customer Name(6) yang sesuai dengan input, dan mengeluarkan output berupa nilai kolom Order Date(2) dan Quantity(18)
+-  Sandbox.csv --> nama file  
+
+##### sandbox.sh
+```
+#!/bin/bash
+
+wget -O Sandbox.csv 'https://drive.google.com/uc?download=export&id=1cC6MYBI3wRwDgqlFQE1OQUN83JAreId0'
+
+echo "PRAKTIKUM SISOP || KELOMPOK 14"
+
+echo -e "\nA) Menampilkan nama customer dengan sales paling tinggi"
+awk -F ',' 'NR>1{if(max=="") { max=$17; cust=$6; } else if($17>max) { max=$17; cust=$6; }} END{print cust}' Sandbox.csv
+
+echo -e "\nB) Menampilkan customer segment dengan profit paling kecil"
+awk -F ',' 'NR>1{if(min=="") { min=$20; segment=$7; } else if($20<min) { min=$20; segment=$7; }} END{print segment}' Sandbox.csv 
+
+echo -e "\nC) Menampilkan 3 kategori dengan total profit tertinggi"
+awk -F ',' 'NR > 1 {profit[$14] += $20} END {for (category in profit) print category}' Sandbox.csv | sort -k2 -nr | head -n3
+
+#kode di bawah ini bisa menyelesaikan soal bagian D jika input yg dimasukkan adalah 'Adriaens Grayland'
+echo -e "\nD) Menampilkan date order dan quantity dati nama customer"
+echo -e "Silahkan masukkan data customer"
+echo -n "Nama Customer: " 
+read nama_cust
+awk -v nama="$nama_cust" -F ',' '$6==nama{  print "Order Date: "$2", Quantity: " $18}' Sandbox.csv
+```
+#### Hasil Pengerjaan
+![Screenshot (511)](https://github.com/fqhhusain/Sisop-1-2024-MH-IT14/assets/150339585/8cb2f9d1-7f9a-41fe-9123-cefd5df3ca50)
+
 ### Revision
+Terdapat revisi dari aslab penguji, yaitu untuk mengubah bagian D agar tidak perlu input nama customer dan dapat langsung memunculkan jawabannya, yaitu data order date dan quantity dari customer dengan nama "Adriaens Grayland"
+
+#### Bagian D
+```
+grep -i "Adriaens .*" Sandbox.csv| awk -F ',' '{print "Customer: "$6 " || Order Date: "$2 " ||  Quantity: "$18 }'
+```
+Penjelasan 
+-  grep -i "Adriaens .*" Sandbox.csv --> mencari string 'Adriaens' di dalam file 'Sandbox.csv' tanpa memperhatikan besar kecil huruf
+-  awk -F ',' --> untuk membaca baris lalu memisah tiap bagian di baris yang dipisah dgn ','
+-  {print "Customer: "$6 " || Order Date: "$2 " ||  Quantity: "$18 } --> setelah menemukan data tiap kolom dari customer "Adriaens", maka perintah ini akan mengeluarkan output berupa nama customer(6), order date(2), dan quantity(18) sesuai dengan letak kolom data
+
+##### sandbox.sh
+```
+#!/bin/bash
+
+wget -O Sandbox.csv 'https://drive.google.com/uc?download=export&id=1cC6MYBI3wRwDgqlFQE1OQUN83JAreId0'
+
+echo "PRAKTIKUM SISOP || KELOMPOK 14"
+
+echo -e "\nA) Menampilkan nama customer dengan sales paling tinggi"
+awk -F ',' 'NR>1{if(max=="") { max=$17; cust=$6; } else if($17>max) { max=$17; cust=$6; }} END{print cust}' Sandbox.csv
+
+echo -e "\nB) Menampilkan customer segment dengan profit paling kecil"
+awk -F ',' 'NR>1{if(min=="") { min=$20; segment=$7; } else if($20<min) { min=$20; segment=$7; }} END{print segment}' Sandbox.csv 
+
+echo -e "\nC) Menampilkan 3 kategori dengan total profit tertinggi"
+awk -F ',' 'NR > 1 {profit[$14] += $20} END {for (category in profit) print category}' Sandbox.csv | sort -k2 -nr | head -n3
+
+echo -e "\nD) Mengecek date order dan quantity dengan nama customer Adriaens"
+grep -i "Adriaens .*" Sandbox.csv| awk -F ',' '{print "Customer: "$6 " || Order Date: "$2 " ||  Quantity: "$18 }'
+
+#kode revisi di atas kurang lebih sama, hanya saja kode di atas dapat secara langsung memunculkan data cust tanpa harus input nama cust
+```
+
+#### Hasil Revisi
+![Screenshot (512)](https://github.com/fqhhusain/Sisop-1-2024-MH-IT14/assets/150339585/2231154f-114d-400b-8f1f-b0f868fce5bf)
+
 
 ## Soal 2
 ### Study Case
