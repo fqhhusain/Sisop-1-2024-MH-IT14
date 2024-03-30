@@ -42,8 +42,6 @@ j. Oppie ingin programnya tercatat dengan baik, maka buatlah agar program bisa m
 ### Study Case
 3. Alyss adalah seorang gamer yang sangat menyukai bermain game Genshin Impact. Karena hobinya, dia ingin mengoleksi foto-foto karakter Genshin Impact. Suatu saat Yanuar memberikannya sebuah Link yang berisi koleksi kumpulan foto karakter dan sebuah clue yang mengarah ke penemuan gambar rahasia. Ternyata setiap nama file telah dienkripsi dengan menggunakan hexadecimal. Karena penasaran dengan apa yang dikatakan Yanuar, Alyss tidak menyerah dan mencoba untuk mengembalikan nama file tersebut kembali seperti semula.
 
-a. Alyss membuat script bernama awal.sh, untuk download file yang diberikan oleh Yanuar dan unzip terhadap file yang telah diunduh dan decode setiap nama file yang terenkripsi dengan hex . Karena pada file list_character.csv terdapat data lengkap karakter, Alyss ingin merename setiap file berdasarkan file tersebut. Agar semakin rapi, Alyss mengumpulkan setiap file ke dalam folder berdasarkan region tiap karakter
-   - Format: Region - Nama - Elemen - Senjata.jpg
 
 b. Karena tidak mengetahui jumlah pengguna dari tiap senjata yang ada di folder "genshin_character".Alyss berniat untuk menghitung serta menampilkan jumlah pengguna untuk setiap senjata yang ada
    - Format: [Nama Senjata] : [jumlah]
@@ -57,15 +55,13 @@ d. Dalam prosesnya, setiap kali Alyss melakukan ekstraksi dan ternyata hasil eks
       [24/03/20 17:18:19] [NOT FOUND] [image_path]
       [24/03/20 17:18:20] [FOUND] [image_path]
 ### Solution
-awal.sh
+a. Alyss membuat script bernama awal.sh, `nano awal.sh` untuk download file yang diberikan oleh Yanuar `wget -O genshin.zip 'https://drive.google.com/uc?export=download&id=1oGHdTf4_76_RacfmQIV4i7os4sGwa9vN' ` dan unzip terhadap file yang telah diunduh 
 ```
-#!/bin/bash
-wget -O genshin.zip 'https://drive.google.com/uc?export=download&id=1oGHdTf4_76_RacfmQIV4i7os4sGwa9vN'
 unzip genshin.zip 
-
 unzip genshin_character.zip
-
-
+```
+dan decode setiap nama file yang terenkripsi dengan hex .
+```
 for encrypted_file in  genshin_character/*
   do
     filename=$(basename -- "$encrypted_file")
@@ -73,7 +69,10 @@ for encrypted_file in  genshin_character/*
     decoded_filename=$(echo "$filename" | xxd -r -p)
     mv "$encrypted_file" "genshin_character/$decoded_filename"
   done
-
+```
+Karena pada file list_character.csv terdapat data lengkap karakter, Alyss ingin merename setiap file berdasarkan file tersebut. Agar semakin rapi, Alyss mengumpulkan setiap file ke dalam folder berdasarkan region tiap karakter
+   - Format: Region - Nama - Elemen - Senjata.jpg
+```
 csv_file="./list_character.csv"
 
 character_dir="./genshin_character"
@@ -89,7 +88,11 @@ do
 
     find "$character_dir" -type f -iname "*$name*" -exec mv {} "$character_dir/$region/$file_name" \;
 done
-
+```
+```
+#!/bin/bash
+```
+```
 declare -A weapon_count
 
 for file in "$character_dir"/*/*.jpg
