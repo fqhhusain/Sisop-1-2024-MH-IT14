@@ -797,11 +797,74 @@ Berikut adalah contoh isi dari file aggregasi yang dijalankan tiap jam:
 type,mem_total,mem_used,mem_free,mem_shared,mem_buff,mem_available,swap_total,swap_used,swap_free,path,path_size minimum,15949,10067,223,588,5339,4626,2047,43,1995,/home/user/coba/,50M maximum,15949,10387,308,622,5573,4974,2047,52,2004,/home/user/coba/,74M average,15949,10227,265.5,605,5456,4800,2047,47.5,1999.5,/home/user/coba/,62M
 
 ### Solution 
+minute_log.sh
+```
+#!/bin/bash
+free -m > /home/vboxuser/log/memory.txt
+
+du -sh /home/vboxuser/ > /home/vboxuser/log/size.txt
+
+read -r -a mem_line <<< $(sed -n '2p' /home/vboxuser/log/memory.txt)
+read -r -a swap_line <<< $(sed -n '3p' /home/vboxuser/log/memory.txt)
+
+mem_total=${mem_line[1]}
+mem_used=${mem_line[2]}
+mem_free=${mem_line[3]}
+mem_shared=${mem_line[4]}
+mem_buff_cache=${mem_line[5]}
+mem_available=${mem_line[6]}
+swap_total=${swap_line[1]}
+swap_used=${swap_line[2]}
+swap_free=${swap_line[3]}
+swap_shared=${swap_line[4]}
+swap_buff=${swap_line[5]}
+swap_available=${swap_line[6]}
+
+read -r -a size_line <<< $(cat /home/vboxuser/log/size.txt
+)
+
+size=${size_line[0]}
+dir=${size_line[1]}
+
+cat << EOF > /home/vboxuser/log/metrics_$(date '+%Y%m%d%H%M%S').log
+mem_total,mem_used,mem_free,mem_shared,mem_buff,mem_available,swap_total,swap_used,swap_free,path,path_size 
+$mem_total,$mem_used,$mem_free,$mem_shared,$mem_buff_cache,$mem_available,$swap_total,$swap_used,$swap_free,$dir,$size
+EOF
+
+chmod -R 700 /home/vboxuser/log/ 
+
+# crontab
+# * * * * * /home/vboxuser/log/minute_log.sh 
+```
 ### Revision
 1. Mengubah format isi dari file metrics yang dijalankan tiap menit
 ![Screenshot (33)](https://github.com/fqhhusain/Sisop-1-2024-MH-IT14/assets/88548292/b989d737-63c6-4054-955f-183039e3748d)
+```
+cat << EOF > /home/vboxuser/log/metrics_$(date '+%Y%m%d%H%M%S').log
+mem_total        : $mem_total
+mem_used         : $mem_used
+mem_free         : $mem_free
+mem_shared       : $mem_shared
+mem_buff/chache  : $mem_buff_cache
+mem_available    : $mem_available
+swap_total       : $swap_total
+swap_used        : $swap_used
+swap_free        : $swap_free
+swap_shared      : $swap_shared
+swap_buff/chace  : $swap_buff
+swap_available   : $swap_available
+$dir             : $size
+EOF
+```
 Menjadi
 ![Screenshot (32)](https://github.com/fqhhusain/Sisop-1-2024-MH-IT14/assets/88548292/e3a0edfb-1b15-4213-ada8-8c45c9413574)
+```
+cat << EOF > /home/vboxuser/log/metrics_$(date '+%Y%m%d%H%M%S').log
+mem_total,mem_used,mem_free,mem_shared,mem_buff,mem_available,swap_total,swap_used,swap_free,path,path_size 
+$mem_total,$mem_used,$mem_free,$mem_shared,$mem_buff_cache,$mem_available,$swap_total,$swap_used,$swap_free,$dir,$size
+EOF
+```
+
 2. Mengubah format isi dari file aggregasi yang dijalankan tiap jam
 ![Screenshot (34)](https://github.com/fqhhusain/Sisop-1-2024-MH-IT14/assets/88548292/eba9c68d-5f0f-4d4a-b3b0-51fba117e32b)
 Menjadi
