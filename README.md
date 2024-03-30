@@ -217,6 +217,8 @@ encrypted_password=$(echo -n "$password" | base64)
 ```
 apabila password tidak sesuai kriteria maka akan keluar output "passwords do not meet security criteria!" dan terdata dalam file auth.log bahwa [REGISTER FAILED] karena password tidak memenuhi kriteria dan apabila password memnuhi kriteria maka password akan terenkripsi ke base64.
 
+![Screenshot (49)](https://github.com/fqhhusain/Sisop-1-2024-MH-IT14/assets/149950475/7bd2e4d1-2b23-465a-a806-903b5d57ecc6)
+
 e. Karena Oppie akan memiliki banyak peneliti dan admin ia berniat untuk menyimpan seluruh data register yang ia lakukan ke dalam folder users lalu membuat file users.txt. Di dalam file tersebut, terdapat catatan seluruh email, username, pertanyaan keamanan dan jawaban, dan password hash yang telah ia buat.
 
 membuat folder users `mkdir users` lalu masuk ke dalam folder tersebut `cd users` dan membuat script users.txt `nano users.txt`dan kita membutuhkan code dalam register.sh untuk mencatat data register ke dalam file users.txt
@@ -226,9 +228,12 @@ echo "$email:$username:$question:$answer:$encrypted_password:$unique" >> /home/a
 ```
 `/home/ash23/Downloads/soalsisop/users/users.txt` adalah alamat dari file users.txt
 
+![Screenshot (52)](https://github.com/fqhhusain/Sisop-1-2024-MH-IT14/assets/149950475/5fe4e2e4-b988-488f-abaa-ea0c69722be8)
+
 # Login
 mengedit file login.sh `nano login.sh`
 ```
+!/bin/bash
 # main
 echo "Welcome to Login System"
 echo "1. Login"
@@ -256,7 +261,7 @@ case "$jawaban" in
     cek_email "$email"
     read -p  "Security Question: " question
     cek_question "$question"
-    read -p "Enter your answer: " answer
+ read -p "Enter your answer: " answer
     cek_answer "$answer" 
     validasi_forget "$email"
     ;; 
@@ -267,6 +272,8 @@ esac
 
 ```
 `# main` adalah tampilan untuk menu login.
+
+![Screenshot (50)](https://github.com/fqhhusain/Sisop-1-2024-MH-IT14/assets/149950475/a6ce79dc-0202-4889-913e-e1998e7ce01c)
 
 f. Setelah melakukan register, program harus bisa melakukan login. Login hanya perlu dilakukan menggunakan email dan password.
 
@@ -362,6 +369,8 @@ validasi_forget() {
 ```
 berfungsi untuk mengeluarkan password yang tersimpan di dalam file users.txt
 
+![Screenshot (51)](https://github.com/fqhhusain/Sisop-1-2024-MH-IT14/assets/149950475/92f7a419-b172-4834-ad8e-9e6030723f0b)
+
 h. Setelah user melakukan login akan keluar pesan sukses, 
 ```
     echo "Login successful"
@@ -371,103 +380,130 @@ h. Setelah user melakukan login akan keluar pesan sukses,
 ```
 namun setelah seorang admin melakukan login Oppie ingin agar admin bisa menambah, mengedit (username, pertanyaan keamanan dan jawaban, dan password), dan menghapus user untuk memudahkan kerjanya sebagai admin.
 
+![Screenshot (45)](https://github.com/fqhhusain/Sisop-1-2024-MH-IT14/assets/149950475/37321681-ee90-41a7-a040-49c0cbc49217)
+
 apabila seorang admin melakukan login maka akan masuk ke fungsi `cek_admin`
 ```
 cek_admin() {
     if [[ $email == *admin* ]]; then
-            echo "Admin Menu"
-            echo "1. Add User"
-            echo "2. Edit User"
-            echo "3. Delete User"
-            echo "4. Logout"
-            echo -n "jawab: "
-            read jawaban
-        
-            case "$jawaban" in
-                "1") 
-                    # Meminta data user tambahan
-                    echo "Add User"
-                    read -p "Enter email: " email
-                    cek_e "$email"
-            	    read -p "Enter username: " username
-                    read -p "Enter a security question: " question
-                    read -p "Enter the answer to security question: " answer
-                    read -s -p "Enter a password (minimum 8 Characters, at least 1 uppercase letter, 1 lowercase letter, 1 digit, 1 symbol, and not same username, birthdate, or name): " password
-                    echo
+        echo "Admin Menu"
+        echo "1. Add User"
+        echo "2. Edit User"
+        echo "3. Delete User"
+        echo "4. Logout"
+        echo -n "jawab: "
+        read jawaban
 
-                    # Cek apakah email mengandung kata admin
-                    if [[ $email == *admin* ]]; then
-                        unique="admin"
-                    else
-                        unique="user"
-                    fi
- 
-                    # Validasi password
-                    if [[ ${#password} -lt 8 || ! "$password" =~ [[:lower:]] || ! "$password" =~ [[:upper:]] || ! "$password" =~ [[:digit:]] || ! "$password" =~ [[:punct:]] ]]; then
-                        echo "passwords do not meet security criteria!"
+        case "$jawaban" in
+            "1")
+                # Mengecek email yang telah teregistrasi
+                cek_e() {
+                    if grep -q "^$email:" /home/ash23/Downloads/soalsisop/users/users.txt; then
+                        echo "Email already registered!"
                         exit 1
                     fi
+                }
+                # Meminta data user tambahan
+                echo "Add User"
+                read -p "Enter email: " email
+                cek_e "$email"
+                     if grep -q "^$email:" /home/ash23/Downloads/soalsisop/users/users.txt; then
+                        echo "Email already registered!"
+                        exit 1
+                    fi
+                }
+                # Meminta data user tambahan
+                echo "Add User"
+                read -p "Enter email: " email
+                cek_e "$email"
+                read -p "Enter username: " username
+                read -p "Enter a security question: " question
+                read -p "Enter the answer to security question: " answer
+                read -s -p "Enter a password (minimum 8 Characters, at least 1 uppercase letter, 1 lowercase letter, 1 digit, 1 symbol, and not same username, birthdate, or name): " password
+                echo
 
-                    # Enkripsi password menggunakan base64
-                    encrypted_pass=$(echo -n "$password" | base64)
-
-                    # Menambahkan pengguna baru ke dalam file users.txt
-                    echo "$email:$username:$question:$answer:$encrypted_pass:$unique" >> /home/ash23/Downloads/soalsisop/users/users.txt
-                    echo "$(date +"[%d/%m/%y %H:%M:%S]") [REGISTER SUCCESS] Admin add [$email] registered successfully." >> /home/ash23/Downloads/soalsisop/users/auth.log
-                    echo "Add User Successfully!"
-                    ;;
-                "2")
-                    # menampilkan email yang ada di users.txt
-                    echo "Data users"
-                    cut -d':' -f1 /home/ash23/Downloads/soalsisop/users/users.txt 
+                # Cek apakah email mengandung kata admin
+                if [[ $email == *admin* ]]; then
+                    unique="admin"
+                else
+                    unique="user"
+                fi
  
-                    # mengedit user
-                    echo "Edit User"
-                    echo "Enter email: "
-                    read email 
-                    read -p "Enter new username: " new_user
-                    read -p "Enter a new security question: " new_secques
-                    read -s -p "Enter a new password (minimum 8 Characters, at least 1 uppercase letter, 1 lowercase letter, 1 digit, 1 symbol, and not same username, birthdate, or name):" new_pass
-                    echo
+                # Validasi password
+                if [[ ${#password} -lt 8 || ! "$password" =~ [[:lower:]] || ! "$password" =~ [[:upper:]] || ! "$password" =~ [[:digit:]] || ! "$password" =~ [[:punct:]] ]]; then
+                    echo "passwords do not meet security criteria!"
+                    exit 1
+                fi
 
-                    # Cek apakah email mengandung kata admin
-                    if [[ $email == *admin* ]]; then
-                        unique="admin"
-                    else
-                        unique="user"
-                    fi
+                # Enkripsi password menggunakan base64
+                encrypted_pass=$(echo -n "$password" | base64)
 
-                    # Validasi password
-                    if [[ ${#new_pass} -lt 8 || ! "$new_pass" =~ [[:lower:]] || ! "$new_pass" =~ [[:upper:]] || ! "$new_pass" =~ [[:digit:]] || ! "$new_pass" =~ [[:punct:]] ]]; then
-                        echo "Edit failed, passwords do not meet security criteria!"
-                        exit 1 
-                    fi
+                # Menambahkan pengguna baru ke dalam file users.txt
+                echo "$email:$username:$question:$answer:$encrypted_pass:$unique" >> /home/ash23/Downloads/soalsisop/users/users.txt
+                echo "Add User Successfully!"
+                ;;
+```
+case 1 untuk admin melakukan add user dan admin perlu memperhatikan bahwa email yang ditambahkan tidak sudah di registrasi sebelumnya dan password harus memenuhi kriteria
+```
+            "2")
+                # menampilkan email yang ada di users.txt
+                echo "Data users"
+ cut -d':' -f1 /home/ash23/Downloads/soalsisop/users/users.txt 
+ 
+                # mengedit user
+                echo "Edit User"
+                echo "Enter email: "
+                read email 
+                read -p "Enter new username: " new_user
+                read -p "Enter a new security question: " new_secques
+                read -p "Enter the new answer to security question: " new_secans 
+                read -s -p "Enter a new password (minimum 8 Characters, at least 1 uppercase letter, 1 lowercase letter, 1 digit, 1 symbol, and not same username, birthdate, or name):" new_pass
+                echo
 
-                    # Enkripsi password menggunakan base64
-                    encrypted_new_pass=$(echo -n "$new_pass" | base64)
+                # Cek apakah email mengandung kata admin
+                if [[ $email == *admin* ]]; then
+                    unique="admin"
+                else
+                    unique="user"
+                fi
 
-                    sed -i "s/^$email:.*/$email:$new_user:$new_secques:$new_secans:$encrypted_new_pass:$unique/" /home/ash23/Downloads/soalsisop/users/users.txt 
-                    echo "User $email succesfully edited" 
-                    ;;
-                "3")
-                    # menampilkan email yang ada di users.txt
-                    echo "Data users"
-                    cut -d':' -f1 /home/ash23/Downloads/soalsisop/users/users.txt 
+                # Validasi password
+                if [[ ${#new_pass} -lt 8 || ! "$new_pass" =~ [[:lower:]] || ! "$new_pass" =~ [[:upper:]] || ! "$new_pass" =~ [[:digit:]] || ! "$new_pass" =~ [[:punct:]] ]]; then
+                    echo "Edit failed, passwords do not meet security criteria!"
+                    exit 1
+                fi
 
-                    # menghapus user
-                    echo "Delete User"
-                    read -p "Enter email: " email
-                    sed -i "/^$email:/d" /home/ash23/Downloads/soalsisop/users/users.txt
-                    echo "User $email succesfully deleted"  
-                    ;;
-                "4")
-                    echo "logout"
-                    ;;
-            esac
+                # Enkripsi password menggunakan base64
+                encrypted_new_pass=$(echo -n "$new_pass" | base64)
+
+                sed -i "s/^$email:.*/$email:$new_user:$new_secques:$new_secans:$encrypted_new_pass:$unique/" /home/ash23/Downloads/soalsisop/users/users.txt 
+                echo "User $email succesfully edited" 
+                ;;
+```
+pada case dua admin dapat melihat email yang sudah terdaftar dan bisa mengedit username, question, answer dan password nya
+```
+            "3")
+                # menampilkan email yang ada di users.txt
+                echo "Data users"
+                cut -d':' -f1 /home/ash23/Downloads/soalsisop/users/users.txt 
+
+                # menghapus user
+                echo "Delete User"
+                read -p "Enter email: " email
+                sed -i "/^$email:/d" /home/ash23/Downloads/soalsisop/users/users.txt
+                echo "User $email succesfully deleted"  
+                ;;
+            "4")
+                echo "logout"
+                ;;
+        esac
     fi
 }
-``` 
+```
+pada case 3 admin dapat melihat email yang terdaftar dan dapat menghapus hanya menggunakan email saja
+
 i. Ketika admin ingin melakukan edit atau hapus user, maka akan keluar input email untuk identifikasi user yang akan di hapus atau di edit
+code untuk melihat email yang sudah teregistrasi
 ```
  # menampilkan email yang ada di users.txt
                     echo "Data users"
@@ -502,10 +538,46 @@ echo "$(date +"[%d/%m/%y %H:%M:%S]") [LOGIN SUCCESS] with email [$email] logged 
 LOGIN FAILED
 ```
 echo "$(date +"[%d/%m/%y %H:%M:%S]") [LOGIN FAILED] with email [$email] logged in failed." >> /home/ash23/Downloads/soalsisop/users/auth.log
-
 ```
+![Screenshot (53)](https://github.com/fqhhusain/Sisop-1-2024-MH-IT14/assets/149950475/f905147c-640a-450a-96c7-976d1f32e334)
+
+# Kendala
+- sempat bingung saat mengalokasikan data register ke dalam file users.txt
+- sempat terjadi error pada fungsi cek_question dan cek_answer
+- langsung memakai nano untuk mengedit, add, dan delete user
+  
 ### Revision
 terdapat revisi untuk admin dapat add user, edit user, dan delete user yang sebelumnya langsung masuk ke dalam file users.txt `nano users.txt`
+code sebelum revisi
+```
+cek_admin() {
+    if [[ $email == *admin* ]]; then
+        echo "Admin Menu"
+        echo "1. Add User"
+        echo "2. Edit User"
+        echo "3. Delete User"
+        echo "4. Logout"
+        echo -n "jawab: "
+        read jawaban
+
+        case "$jawaban" in
+            "1")
+                nano /home/ash23/Downloads/soalsisop/users/users.txt
+                ;;
+            "2")
+                nano /home/ash23/Downloads/soalsisop/users/users.txt
+                ;;
+            "3")
+                nano /home/ash23/Downloads/soalsisop/users/users.txt
+                ;;
+            "4")
+               echo "logout"
+               exit 1
+               ;;
+        esac
+   fi
+}
+```
 ## Soal 3
 ### Study Case
 3. Alyss adalah seorang gamer yang sangat menyukai bermain game Genshin Impact. Karena hobinya, dia ingin mengoleksi foto-foto karakter Genshin Impact. Suatu saat Yanuar memberikannya sebuah Link yang berisi koleksi kumpulan foto karakter dan sebuah clue yang mengarah ke penemuan gambar rahasia. Ternyata setiap nama file telah dienkripsi dengan menggunakan hexadecimal. Karena penasaran dengan apa yang dikatakan Yanuar, Alyss tidak menyerah dan mencoba untuk mengembalikan nama file tersebut kembali seperti semula.
