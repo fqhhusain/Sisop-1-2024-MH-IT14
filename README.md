@@ -773,36 +773,19 @@ Menghapus file yang tidak diperlukan
 ### Study Case
 Stitch sangat senang dengan PC di rumahnya. Suatu hari, PC nya secara tiba-tiba nge-freeze 🤯 Tentu saja, Stitch adalah seorang streamer yang harus setiap hari harus bermain game dan streaming.  Akhirnya, dia membawa PC nya ke tukang servis untuk diperbaiki. Setelah selesai diperbaiki, ternyata biaya perbaikan sangat mahal sehingga dia harus menggunakan uang hasil tabungan nya untuk membayarnya. Menurut tukang servis, masalahnya adalah pada CPU dan GPU yang overload karena gaming dan streaming sehingga mengakibatkan freeze pada PC nya. Agar masalah ini tidak terulang kembali, Stitch meminta kamu untuk membuat sebuah program monitoring resource yang tersedia pada komputer.
 
-Buatlah program monitoring resource pada PC kalian. Cukup monitoring ram dan monitoring size suatu directory. Untuk ram gunakan command `free -m`. Untuk disk gunakan command `du -sh <target_path>`. Catat semua metrics yang didapatkan dari hasil `free -m`. Untuk hasil `du -sh <target_path>` catat size dari path directory tersebut. Untuk target_path yang akan dimonitor adalah /home/{user}/. 
-
-1. Masukkan semua metrics ke dalam suatu file log bernama metrics_{YmdHms}.log. {YmdHms} adalah waktu disaat file script bash kalian dijalankan. Misal dijalankan pada 2024-03-20 15:00:00, maka file log yang akan tergenerate adalah metrics_20240320150000.log. 
-
-2. Script untuk mencatat metrics diatas diharapkan dapat berjalan otomatis pada setiap menit. 
-
-3. Kemudian, buat satu script untuk membuat agregasi file log ke satuan jam. Script agregasi akan memiliki info dari file-file yang tergenerate tiap menit. Dalam hasil file agregasi tersebut, terdapat nilai minimum, maximum, dan rata-rata dari tiap-tiap metrics. File agregasi akan ditrigger untuk dijalankan setiap jam secara otomatis. Berikut contoh nama file hasil agregasi metrics_agg_2024032015.log dengan format metrics_agg_{YmdH}.log 
-
-4. Karena file log bersifat sensitif pastikan semua file log hanya dapat dibaca oleh user pemilik file. 
-
-Note:
-- Nama file untuk script per menit adalah minute_log.sh
-- Nama file untuk script agregasi per jam adalah aggregate_minutes_to_hourly_log.shN
-- Semua file log terletak di /home/{user}/log
-- Semua konfigurasi cron dapat ditaruh di file skrip .sh nya masing-masing dalam bentuk comment
-
-
-Berikut adalah contoh isi dari file metrics yang dijalankan tiap menit:
-mem_total,mem_used,mem_free,mem_shared,mem_buff,mem_available,swap_total,swap_used,swap_free,path,path_size 15949,10067,308,588,5573,4974,2047,43,2004,/home/user/coba/,74M
-
-Berikut adalah contoh isi dari file aggregasi yang dijalankan tiap jam:
-type,mem_total,mem_used,mem_free,mem_shared,mem_buff,mem_available,swap_total,swap_used,swap_free,path,path_size minimum,15949,10067,223,588,5339,4626,2047,43,1995,/home/user/coba/,50M maximum,15949,10387,308,622,5573,4974,2047,52,2004,/home/user/coba/,74M average,15949,10227,265.5,605,5456,4800,2047,47.5,1999.5,/home/user/coba/,62M
-
 ### Solution 
+
 minute_log.sh
 ```
 #!/bin/bash
 free -m > /home/vboxuser/log/memory.txt
-
+```
+Buatlah program monitoring resource pada PC kalian. Cukup monitoring ram dan monitoring size suatu directory. Untuk ram gunakan command `free -m`. 
+```
 du -sh /home/vboxuser/ > /home/vboxuser/log/size.txt
+```
+Untuk disk gunakan command `du -sh /home/{user}/`. 
+```
 
 read -r -a mem_line <<< $(sed -n '2p' /home/vboxuser/log/memory.txt)
 read -r -a swap_line <<< $(sed -n '3p' /home/vboxuser/log/memory.txt)
@@ -830,14 +813,139 @@ cat << EOF > /home/vboxuser/log/metrics_$(date '+%Y%m%d%H%M%S').log
 mem_total,mem_used,mem_free,mem_shared,mem_buff,mem_available,swap_total,swap_used,swap_free,path,path_size 
 $mem_total,$mem_used,$mem_free,$mem_shared,$mem_buff_cache,$mem_available,$swap_total,$swap_used,$swap_free,$dir,$size
 EOF
+```
+Masukkan semua metrics ke dalam suatu file log bernama metrics_{YmdHms}.log. {YmdHms} adalah waktu disaat file script bash kalian dijalankan. Misal dijalankan pada 2024-03-20 15:00:00, maka file log yang akan tergenerate adalah metrics_20240320150000.log. 
+```
 
-chmod -R 700 /home/vboxuser/log/ 
+chmod -R 700 /home/vboxuser/log/
+```
+Karena file log bersifat sensitif pastikan semua file log hanya dapat dibaca oleh user pemilik file. 
+```
 
 # crontab
-# * * * * * /home/vboxuser/log/minute_log.sh 
+# * * * * * /home/vboxuser/log/minute_log.sh
 ```
-aggregate_minutes_to_hourly_log.sh
+Script diatas mencatat metrics diatas diharapkan dapat berjalan otomatis pada setiap menit. 
 
+aggregate_minutes_to_hourly_log.sh
+```
+#!/bin/bash
+
+# Set the directory where log files are stored
+LOG_DIR="/home/vboxuser/log"
+HOUR=$(date '+%Y%m%d%H')
+
+# Initialize variables for aggregation
+total_lines=0
+total_mem_total=0
+total_mem_used=0
+total_mem_free=0
+total_mem_shared=0
+total_mem_buff=0
+total_mem_available=0
+total_swap_total=0
+total_swap_used=0
+total_swap_free=0
+total_path_size=0
+
+# Initialize variables for minimum and maximum
+min_mem_total=99999999
+max_mem_total=0
+min_mem_used=99999999
+max_mem_used=0
+max_mem_free=0
+max_mem_shared=0
+max_mem_buff=0
+max_mem_available=0
+max_swap_total=0
+max_swap_used=0
+max_swap_free=0
+max_path_size=0
+min_mem_free=99999999
+min_mem_shared=99999999
+min_mem_buff=99999999
+min_mem_available=99999999
+min_swap_total=99999999
+min_swap_used=99999999
+min_swap_free=99999999
+min_path_size=99999999
+
+# Loop through log files generated at the same minute
+for file in /home/vboxuser/log/metrics_${HOUR}*.log; do
+```
+Membuat agregasi file log ke satuan jam. Script agregasi akan memiliki info dari file-file yang tergenerate tiap menit.
+```
+    # Extract values from the log file
+    while IFS="," read -r mem_total mem_used mem_free mem_shared mem_buff mem_available swap_total swap_used swap_free path path_size
+    do 
+
+    # Precompute path size (remove 'G' and convert to MB)
+    path_size="${path_size//G}"
+    path_size=$((path_size * 1024))
+
+    # Update aggregation variables
+    total_lines=$((total_lines + 1))
+    total_mem_total=$((total_mem_total + mem_total))
+    total_mem_used=$((total_mem_used + mem_used))
+    total_mem_free=$((total_mem_free + mem_free))
+    total_mem_shared=$((total_mem_shared + mem_shared))
+    total_mem_buff=$((total_mem_buff + mem_buff))
+    total_mem_available=$((total_mem_available + mem_available))
+    total_swap_total=$((total_swap_total + swap_total))
+    total_swap_used=$((total_swap_used + swap_used))
+    total_swap_free=$((total_swap_free + swap_free))
+    total_path_size=$((total_path_size + path_size))
+
+    # Update minimum and maximum values
+    min_mem_total=$((mem_total < min_mem_total ? mem_total : min_mem_total))
+    max_mem_total=$((mem_total > max_mem_total ? mem_total : max_mem_total))
+    min_mem_used=$((mem_used < min_mem_used ? mem_used : min_mem_used))
+    max_mem_used=$((mem_used > max_mem_used ? mem_used : max_mem_used))
+    min_mem_free=$((mem_free < min_mem_free ? mem_free : min_mem_free))
+    max_mem_free=$((mem_free > max_mem_free ? mem_free : max_mem_free))
+    min_mem_shared=$((mem_shared < min_mem_shared ? mem_shared : min_mem_shared))
+    max_mem_shared=$((mem_shared > max_mem_shared ? mem_shared : max_mem_shared))
+    min_mem_buff=$((mem_buff < min_mem_buff ? mem_buff : min_mem_buff))
+    max_mem_buff=$((mem_buff > max_mem_buff ? mem_buff : max_mem_buff))
+    min_mem_available=$((mem_available < min_mem_available ? mem_available : min_mem_available))
+    max_mem_available=$((mem_available > max_mem_available ? mem_available : max_mem_available))
+    min_swap_total=$((swap_total < min_swap_total ? swap_total : min_swap_total))
+    max_swap_total=$((swap_total > max_swap_total ? swap_total : max_swap_total))
+    min_swap_used=$((swap_used < min_swap_used ? swap_used : min_swap_used))
+    max_swap_used=$((swap_used > max_swap_used ? swap_used : max_swap_used))
+    min_swap_free=$((swap_free < min_swap_free ? swap_free : min_swap_free))
+    max_swap_free=$((swap_free > max_swap_free ? swap_free : max_swap_free))
+    min_path_size=$((path_size < min_path_size ? path_size : min_path_size))
+    max_path_size=$((path_size > max_path_size ? path_size : max_path_size))
+    done < <(sed -n '2p' "$file")
+done
+
+# Calculate averages
+average_mem_total=$((total_mem_total / total_lines))
+average_mem_used=$((total_mem_used / total_lines))
+average_mem_free=$((total_mem_free / total_lines))
+average_mem_shared=$((total_mem_shared / total_lines))
+average_mem_buff=$((total_mem_buff / total_lines))
+average_mem_available=$((total_mem_available / total_lines))
+average_swap_total=$((total_swap_total / total_lines))
+average_swap_used=$((total_swap_used / total_lines))
+average_swap_free=$((total_swap_free / total_lines))
+average_path_size=$((total_path_size / total_lines))
+
+average_path_size=$(echo "$average_path_size / 1000" | bc)"G"
+min_path_size=$(echo "$min_path_size / 1000" | bc)"G"
+max_path_size=$(echo "$max_path_size / 1000" | bc)"G"
+
+# Write aggregated results to the summary file
+summary_file="$LOG_DIR/metrics_agg_$(date '+%Y%m%d%H').log"
+echo "type,mem_total,mem_used,mem_free,mem_shared,mem_buff,mem_available,swap_total,swap_used,swap_free,path,path_size" > "$summary_file"
+echo "minimum,$min_mem_total,$min_mem_used,$min_mem_free,$min_mem_shared,$min_mem_buff,$min_mem_available,$min_swap_total,$min_swap_used,$min_swap_free,/home/vboxuser,$min_path_size" >> "$summary_file"
+echo "maximum,$max_mem_total,$max_mem_used,$max_mem_free,$max_mem_shared,$max_mem_buff,$max_mem_available,$max_swap_total,$max_swap_used,$max_swap_free,/home/vboxuser,$max_path_size" >> "$summary_file"
+echo "average,$average_mem_total,$average_mem_used,$average_mem_free,$average_mem_shared,$average_mem_buff,$average_mem_available,$average_swap_total,$average_swap_used,$average_swap_free,/home/vboxuser,$average_path_size" >> "$summary_file"
+
+#59 * * * * /bin/bash /home/vboxuser/log/aggregate_minutes_to_hourly_log.sh
+```
+File agregasi akan ditrigger untuk dijalankan setiap jam secara otomatis
 ### Revision
 1. Mengubah format isi dari file metrics yang dijalankan tiap menit
 ![Screenshot (33)](https://github.com/fqhhusain/Sisop-1-2024-MH-IT14/assets/88548292/b989d737-63c6-4054-955f-183039e3748d)
