@@ -589,3 +589,7 @@ type,mem_total,mem_used,mem_free,mem_shared,mem_buff,mem_available,swap_total,sw
 
 ### Solution 
 ### Revision
+1. Mengubah format isi dari file metrics yang dijalankan tiap menit
+![Screenshot (33)](https://github.com/fqhhusain/Sisop-1-2024-MH-IT14/assets/88548292/b989d737-63c6-4054-955f-183039e3748d)
+![Screenshot (32)](https://github.com/fqhhusain/Sisop-1-2024-MH-IT14/assets/88548292/e3a0edfb-1b15-4213-ada8-8c45c9413574)
+3. Mengubah format isi dari file aggregasi yang dijalankan tiap jam
