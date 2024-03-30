@@ -553,8 +553,10 @@ Menghapus file yang tidak diperlukan
 2. awal.sh
 3. image.log
 4. genshin_character
-5. [filename].txt
-6. [image].jpg
+![genshin char](https://github.com/fqhhusain/Sisop-1-2024-MH-IT14/assets/88548292/380e5b26-efaf-4ab2-ada6-eddba88b64ec)
+![Screenshot (30)](https://github.com/fqhhusain/Sisop-1-2024-MH-IT14/assets/88548292/16345a68-fe58-4167-ba16-87250d54724e)
+6. [filename].txt
+7. [image].jpg
 
 ### Revision
 1. Tidak ada, pada saat demo sudah lancar dan tidak ada tambahan dari aslab penguji
