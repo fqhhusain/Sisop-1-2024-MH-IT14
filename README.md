@@ -761,11 +761,74 @@ Menghapus file yang tidak diperlukan
 1. search.sh
 2. awal.sh
 3. image.log
+[27/03/24 22:02:10] [NOT FOUND] [genshin_character/Fontaine/Fontaine - Lynette - Anemo - Sword.jpg]
+
+[27/03/24 22:02:10] [NOT FOUND] [genshin_character/Fontaine/Fontaine - Lyney - Pyro - Bow.jpg]
+
+[27/03/24 22:02:10] [NOT FOUND] [genshin_character/Inazuma/Inazuma - Arataki Itto - Geo - Claymore.jpg]
+
+[27/03/24 22:02:10] [NOT FOUND] [genshin_character/Inazuma/Inazuma - Ayaka - Cyro - Sword.jpg]
+
+[27/03/24 22:02:10] [NOT FOUND] [genshin_character/Inazuma/Inazuma - Ayato - Hydro - Sword.jpg]
+
+[27/03/24 22:02:10] [NOT FOUND] [genshin_character/Inazuma/Inazuma - Kaedehara Kazuha - Anemo - Sword.jpg]
+
+[27/03/24 22:02:10] [NOT FOUND] [genshin_character/Inazuma/Inazuma - Kujou Sara - Electro - Bow.jpg]
+
+[27/03/24 22:02:10] [NOT FOUND] [genshin_character/Inazuma/Inazuma - Raiden Shogun - Electro - Polearm.jpg]
+
+[27/03/24 22:02:10] [NOT FOUND] [genshin_character/Inazuma/Inazuma - Sangonomiya Kokomi - Hydro - Catalyst.jpg]
+
+[27/03/24 22:02:10] [NOT FOUND] [genshin_character/Inazuma/Inazuma - Sayu - Anemo - Claymore.jpg]
+
+[27/03/24 22:02:10] [NOT FOUND] [genshin_character/Inazuma/Inazuma - Yae Miko - Electro - Catalyst.jpg]
+
+[27/03/24 22:02:10] [NOT FOUND] [genshin_character/Inazuma/Inazuma - Yoimiya - Pyro - Claymore.jpg]
+
+[27/03/24 22:02:10] [NOT FOUND] [genshin_character/Liyue/Liyue - Ganyu - Cyro - Bow.jpg]
+
+[27/03/24 22:02:10] [NOT FOUND] [genshin_character/Liyue/Liyue - Hu Tao - Pyro - Polearm.jpg]
+
+[27/03/24 22:02:10] [NOT FOUND] [genshin_character/Liyue/Liyue - Keqing - Electro - Sword.jpg]
+
+[27/03/24 22:02:10] [NOT FOUND] [genshin_character/Liyue/Liyue - Ningguang - Geo - Catalyst.jpg]
+
+[27/03/24 22:02:10] [NOT FOUND] [genshin_character/Liyue/Liyue - Qiqi - Cyro - Catalyst.jpg]
+
+[27/03/24 22:02:10] [NOT FOUND] [genshin_character/Liyue/Liyue - Xiangling - Pyro - Polearm.jpg]
+
+[27/03/24 22:02:10] [NOT FOUND] [genshin_character/Liyue/Liyue - Xiao - Anemo - Polearm.jpg]
+
+[27/03/24 22:02:10] [NOT FOUND] [genshin_character/Liyue/Liyue - Xingqiu - Hydro - Sword.jpg]
+
+[27/03/24 22:02:10] [NOT FOUND] [genshin_character/Liyue/Liyue - Yanfei - Pyro - Catalyst.jpg]
+
+[27/03/24 22:02:10] [NOT FOUND] [genshin_character/Liyue/Liyue - Zhongli - Geo - Polearm.jpg]
+
+[27/03/24 22:02:10] [NOT FOUND] [genshin_character/Mondstat/Mondstat - Albedo - Geo - Sword.jpg]
+
+[27/03/24 22:02:10] [NOT FOUND] [genshin_character/Mondstat/Mondstat - Barbara - Hydro - Catalyst.jpg]
+
+[27/03/24 22:02:10] [NOT FOUND] [genshin_character/Mondstat/Mondstat - Bennett - Pyro - Sword.jpg]
+
+[27/03/24 22:02:10] [NOT FOUND] [genshin_character/Mondstat/Mondstat - Chongyun - Cyro - Claymore.jpg]
+
+[27/03/24 22:02:10] [NOT FOUND] [genshin_character/Mondstat/Mondstat - Diluc - Pyro - Claymore.jpg]
+
+[27/03/24 22:02:10] [NOT FOUND] [genshin_character/Mondstat/Mondstat - Diona - Cyro - Bow.jpg]
+
+[27/03/24 22:02:10] [NOT FOUND] [genshin_character/Mondstat/Mondstat - Fischl - Electro - Catalyst.jpg]
+
+[27/03/24 22:02:10] [NOT FOUND] [genshin_character/Mondstat/Mondstat - Klee - Pyro - Catalyst.jpg]
+
+[27/03/24 22:02:10] [FOUND] [genshin_character/Mondstat/Mondstat - Lisa - Electro - Catalyst.jpg]
+
 4. genshin_character
 ![genshin char](https://github.com/fqhhusain/Sisop-1-2024-MH-IT14/assets/88548292/380e5b26-efaf-4ab2-ada6-eddba88b64ec)
 ![Screenshot (30)](https://github.com/fqhhusain/Sisop-1-2024-MH-IT14/assets/88548292/16345a68-fe58-4167-ba16-87250d54724e)
-6. [filename].txt
-7. [image].jpg
+5. link.txt
+https://i.pinimg.com/474x/ea/b0/65/eab0659ba060b0624df5d28b4910b2fb.jpg
+6. s3cret_image.jpg
 
 ### Revision
 1. Tidak ada, pada saat demo sudah lancar dan tidak ada tambahan dari aslab penguji
@@ -830,12 +893,14 @@ Script diatas mencatat metrics diatas diharapkan dapat berjalan otomatis pada se
 aggregate_minutes_to_hourly_log.sh
 ```
 #!/bin/bash
-
-# Set the directory where log files are stored
+```
+Set the directory where log files are stored
+```
 LOG_DIR="/home/vboxuser/log"
 HOUR=$(date '+%Y%m%d%H')
-
-# Initialize variables for aggregation
+```
+Initialize variables for aggregation
+```
 total_lines=0
 total_mem_total=0
 total_mem_used=0
@@ -847,8 +912,9 @@ total_swap_total=0
 total_swap_used=0
 total_swap_free=0
 total_path_size=0
-
-# Initialize variables for minimum and maximum
+```
+Initialize variables for minimum and maximum
+```
 min_mem_total=99999999
 max_mem_total=0
 min_mem_used=99999999
@@ -869,21 +935,24 @@ min_swap_total=99999999
 min_swap_used=99999999
 min_swap_free=99999999
 min_path_size=99999999
-
-# Loop through log files generated at the same minute
+```
+Loop through log files generated at the same minute
+```
 for file in /home/vboxuser/log/metrics_${HOUR}*.log; do
 ```
 Membuat agregasi file log ke satuan jam. Script agregasi akan memiliki info dari file-file yang tergenerate tiap menit.
+Extract values from the log file
 ```
-    # Extract values from the log file
     while IFS="," read -r mem_total mem_used mem_free mem_shared mem_buff mem_available swap_total swap_used swap_free path path_size
     do 
-
-    # Precompute path size (remove 'G' and convert to MB)
+```
+Precompute path size (remove 'G' and convert to MB)
+```
     path_size="${path_size//G}"
     path_size=$((path_size * 1024))
-
-    # Update aggregation variables
+```
+Update aggregation variables
+```
     total_lines=$((total_lines + 1))
     total_mem_total=$((total_mem_total + mem_total))
     total_mem_used=$((total_mem_used + mem_used))
@@ -895,8 +964,9 @@ Membuat agregasi file log ke satuan jam. Script agregasi akan memiliki info dari
     total_swap_used=$((total_swap_used + swap_used))
     total_swap_free=$((total_swap_free + swap_free))
     total_path_size=$((total_path_size + path_size))
-
-    # Update minimum and maximum values
+```
+Update minimum and maximum values
+```
     min_mem_total=$((mem_total < min_mem_total ? mem_total : min_mem_total))
     max_mem_total=$((mem_total > max_mem_total ? mem_total : max_mem_total))
     min_mem_used=$((mem_used < min_mem_used ? mem_used : min_mem_used))
@@ -919,8 +989,9 @@ Membuat agregasi file log ke satuan jam. Script agregasi akan memiliki info dari
     max_path_size=$((path_size > max_path_size ? path_size : max_path_size))
     done < <(sed -n '2p' "$file")
 done
-
-# Calculate averages
+```
+ Calculate averages
+```
 average_mem_total=$((total_mem_total / total_lines))
 average_mem_used=$((total_mem_used / total_lines))
 average_mem_free=$((total_mem_free / total_lines))
@@ -935,8 +1006,9 @@ average_path_size=$((total_path_size / total_lines))
 average_path_size=$(echo "$average_path_size / 1000" | bc)"G"
 min_path_size=$(echo "$min_path_size / 1000" | bc)"G"
 max_path_size=$(echo "$max_path_size / 1000" | bc)"G"
-
-# Write aggregated results to the summary file
+```
+ Write aggregated results to the summary file
+```
 summary_file="$LOG_DIR/metrics_agg_$(date '+%Y%m%d%H').log"
 echo "type,mem_total,mem_used,mem_free,mem_shared,mem_buff,mem_available,swap_total,swap_used,swap_free,path,path_size" > "$summary_file"
 echo "minimum,$min_mem_total,$min_mem_used,$min_mem_free,$min_mem_shared,$min_mem_buff,$min_mem_available,$min_swap_total,$min_swap_used,$min_swap_free,/home/vboxuser,$min_path_size" >> "$summary_file"
@@ -974,9 +1046,10 @@ mem_total,mem_used,mem_free,mem_shared,mem_buff,mem_available,swap_total,swap_us
 $mem_total,$mem_used,$mem_free,$mem_shared,$mem_buff_cache,$mem_available,$swap_total,$swap_used,$swap_free,$dir,$size
 EOF
 ```
-
+Format output dari minute_log.sh diubah
 2. Mengubah format isi dari file aggregasi yang dijalankan tiap jam
 ![Screenshot (34)](https://github.com/fqhhusain/Sisop-1-2024-MH-IT14/assets/88548292/eba9c68d-5f0f-4d4a-b3b0-51fba117e32b)
+Shell script sebelum revisi :
 ```
 #!/bin/bash
 
@@ -1072,3 +1145,4 @@ done
 ```
 Menjadi
 ![Screenshot (39)](https://github.com/fqhhusain/Sisop-1-2024-MH-IT14/assets/88548292/3800cf95-3266-484c-b159-8e166cafefe0)
+Format input dan output dari aggregate_minutes_to_hourly_log.sh diubah
