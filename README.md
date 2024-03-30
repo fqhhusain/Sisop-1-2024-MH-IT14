@@ -53,13 +53,6 @@ d. Dalam prosesnya, setiap kali Alyss melakukan ekstraksi dan ternyata hasil eks
     - Ex: 
       [24/03/20 17:18:19] [NOT FOUND] [image_path]
       [24/03/20 17:18:20] [FOUND] [image_path]
-e. Hasil akhir:
-   genshin_character
-   search.sh
-   awal.sh
-   image.log
-   [filename].txt
-   [image].jpg
 ### Solution
 awal.sh
 ```
@@ -153,6 +146,13 @@ done
 rm decrypted.txt
 rm encrypt.txt
 ```
+### Hasil Akhir
+1. search.sh
+2. awal.sh
+3. image.log
+4. genshin_character
+5. [filename].txt
+6. [image].jpg
 
 ### Revision
 1. Tidak ada, pada saat demo sudah lancar dan tidak ada tambahan dari aslab penguji
