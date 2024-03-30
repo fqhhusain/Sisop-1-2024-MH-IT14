@@ -106,7 +106,7 @@ rm genshin_character.zip
 rm list_character.csv 
 rm genshin.zip
 ```
-Namun sampai titik ini Alyss masih belum menemukan clue dari the secret picture yang disinggung oleh Yanuar. Dia berpikir keras untuk menemukan pesan tersembunyi tersebut. Alyss membuat script baru bernama search.sh `touch search.sh` untuk melakukan pengecekan terhadap setiap file tiap 1 detik. Pengecekan dilakukan dengan cara meng-ekstrak sebuah value dari setiap gambar dengan menggunakan command steghide. Dalam setiap gambar tersebut, terdapat sebuah file txt yang berisi string. Alyss kemudian mulai melakukan dekripsi dengan hex pada tiap file txt dan mendapatkan sebuah url. Setelah mendapatkan url yang ia cari, Alyss akan langsung menghentikan program search.sh serta mendownload file berdasarkan url yang didapatkan.
+Namun sampai titik ini Alyss masih belum menemukan clue dari the secret picture yang disinggung oleh Yanuar. Dia berpikir keras untuk menemukan pesan tersembunyi tersebut. Alyss membuat script baru bernama search.sh `touch search.sh` untuk melakukan pengecekan terhadap setiap file tiap 1 detik.Pengecekan dilakukan dengan cara meng-ekstrak sebuah value dari setiap gambar dengan menggunakan command steghide. Dalam setiap gambar tersebut, terdapat sebuah file txt yang berisi string. Alyss kemudian mulai melakukan dekripsi dengan hex pada tiap file txt dan mendapatkan sebuah url. Setelah mendapatkan url yang ia cari, Alyss akan langsung menghentikan program search.sh serta mendownload file berdasarkan url yang didapatkan.
 
 d. Dalam prosesnya, setiap kali Alyss melakukan ekstraksi dan ternyata hasil ekstraksi bukan yang ia inginkan, maka ia akan langsung menghapus file txt tersebut. Namun, jika itu merupakan file txt yang dicari, maka ia akan menyimpan hasil dekripsi-nya bukan hasil ekstraksi. Selain itu juga, Alyss melakukan pencatatan log pada file image.log untuk setiap pengecekan gambar
     - Format: [date] [type] [image_path]
@@ -114,7 +114,7 @@ d. Dalam prosesnya, setiap kali Alyss melakukan ekstraksi dan ternyata hasil eks
       [24/03/20 17:18:19] [NOT FOUND] [image_path]
       [24/03/20 17:18:20] [FOUND] [image_path]
 
-search.sh
+Program keseluruhan dari search.sh
 ```
 #!/bin/bash
 
@@ -154,6 +154,19 @@ done
 rm decrypted.txt
 rm encrypt.txt
 ```
+Penjelasan
+`sleep 1`
+menunggu 1 detik untuk melakukan pengecekan selanjutnya
+`steghide extract -sf "$file" -xf encrypt.txt -p "" `
+Pengecekan dilakukan dengan cara meng-ekstrak sebuah value dari setiap gambar dengan menggunakan command steghide.
+```
+decrypt=$(cat encrypt.txt | base64 -d 2>/dev/null)
+  echo "$decrypt" > "$decryption_file"
+```
+Dalam setiap gambar tersebut, terdapat sebuah file txt yang berisi string. Alyss kemudian mulai melakukan dekripsi dengan hex pada tiap file txt untuk mendapatkan sebuah url.
+`if [[ "$decrypt" == *"http"* ]]`
+Melakukan pengecekan url dengan mencari sub string http
+
 ### Hasil Akhir
 1. search.sh
 2. awal.sh
