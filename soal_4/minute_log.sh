@@ -26,19 +26,8 @@ size=${size_line[0]}
 dir=${size_line[1]}
 
 cat << EOF > /home/vboxuser/log/metrics_$(date '+%Y%m%d%H%M%S').log
-mem_total        : $mem_total
-mem_used         : $mem_used
-mem_free         : $mem_free
-mem_shared       : $mem_shared
-mem_buff/chache  : $mem_buff_cache
-mem_available    : $mem_available
-swap_total       : $swap_total
-swap_used        : $swap_used
-swap_free        : $swap_free
-swap_shared      : $swap_shared
-swap_buff/chace  : $swap_buff
-swap_available   : $swap_available
-$dir             : $size
+mem_total,mem_used,mem_free,mem_shared,mem_buff,mem_available,swap_total,swap_used,swap_free,path,path_size 
+$mem_total,$mem_used,$mem_free,$mem_shared,$mem_buff_cache,$mem_available,$swap_total,$swap_used,$swap_free,$dir,$size
 EOF
 
 chmod -R 700 /home/vboxuser/log/ 
