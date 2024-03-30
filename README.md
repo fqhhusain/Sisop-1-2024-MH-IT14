@@ -805,3 +805,4 @@ Menjadi
 2. Mengubah format isi dari file aggregasi yang dijalankan tiap jam
 ![Screenshot (34)](https://github.com/fqhhusain/Sisop-1-2024-MH-IT14/assets/88548292/eba9c68d-5f0f-4d4a-b3b0-51fba117e32b)
 Menjadi
+![Screenshot (39)](https://github.com/fqhhusain/Sisop-1-2024-MH-IT14/assets/88548292/3800cf95-3266-484c-b159-8e166cafefe0)
